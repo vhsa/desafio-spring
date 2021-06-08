@@ -1,11 +1,15 @@
 Primeiros passos para inicias a aplicacao:
 
-1) Dentro da pasta do projeto, digite o seguinte comando:
+1) Requerimentos
+   - Open JDK 11
+   - Docker
+
+2) Dentro da pasta do projeto, digite o seguinte comando:
 ```shell
 cd ./src/main/resources
 ```
 
-2) Inicie o banco de dados da aplicação com o seguinte comando
+3) Inicie o banco de dados da aplicação com o seguinte comando
 ```shell
 docker-compose up
 ```
@@ -37,21 +41,8 @@ docker-compose up
 ```
 ```javascript
 {
-    "username": "client1",
-    "email": "client1@mercadolivre.com"
-}
-```
-<i><p>* ambos os campos são <b>obrigatórios</b> e o email deve ser <b>único</b></p></i>
-
-* UC02 - Create a new seller
-```shell
-/users/seller
-```
-
-```javascript
-{
-    "username": "seller1",
-    "email": "seller1@mercadolivre.com"
+   "username": "client1",
+           "email": "client1@mercadolivre.com"
 }
 ```
 <i><p>* ambos os campos são <b>obrigatórios</b> e o email deve ser <b>único</b></p></i>
@@ -60,8 +51,8 @@ docker-compose up
 
 ```javascript
 {
-    "username": "seller1",
-    "email": "seller1@mercadolivre.com"
+   "username": "seller1",
+           "email": "seller1@mercadolivre.com"
 }
 ```
 <i><p>* ambos os campos são <b>obrigatórios</b> e o email deve ser <b>único</b></p></i>
@@ -98,8 +89,8 @@ docker-compose up
 ```shell
 /users/{userId}/followers/list?type=client
 ```
-<i><p>* userId: pode ser tanto o um <b>client</b> quanto um <b>seller</b>, 
-lembre-se que o <b>request param</b> <u>type</u>, é obrigatório, 
+<i><p>* userId: pode ser tanto o um <b>client</b> quanto um <b>seller</b>,
+lembre-se que o <b>request param</b> <u>type</u>, é obrigatório,
 podendo ter duas variações: seller e client</i>
 
 <b>Os requisitos US0003 e US0004 possuem a mesma finalidade, porém o <i>request param <u>type</u> os diferenciam</i></b>
@@ -111,18 +102,18 @@ podendo ter duas variações: seller e client</i>
 
 ```javascript
 {
-    "seller": {"id" : 1},
-    "date" : "2021-06-08",
-    "detail" :
-        { 
-            "productName" : "Celular",
-            "type" : "Office",
-            "brand" : "Apple",
-            "color" : "Black",
-            "notes" : "Special Edition"
-        },
-    "category" : 100,
-    "price" : 2500.50
+   "seller": {"id" : 1},
+   "date" : "2021-06-08",
+           "detail" :
+   {
+      "productName" : "Celular",
+           "type" : "Office",
+           "brand" : "Apple",
+           "color" : "Black",
+           "notes" : "Special Edition"
+   },
+   "category" : 100,
+           "price" : 2500.50
 }
 ```
 <i><p>* o atributo <i>seller</i> deve ser passado igual no exemplo de <i>request body</i> mostrado acima <br> </p></i>
@@ -165,20 +156,20 @@ podendo ter duas variações: seller e client</i>
 ```
 ```javascript
 {
-    "seller": {"id" : 1},
-    "date" : "2021-06-10",
-    "detail" :
-        { 
-            "productName" : "Liquidificador",
-            "type" : "Office",
-            "brand" : "Philips",
-            "color" : "Black",
-            "notes" : "Special Edition"
-        },
-    "category" : 50,
-    "price" : 200.50,
-    "hasPromo": true,
-    "discount": 15.0
+   "seller": {"id" : 1},
+   "date" : "2021-06-10",
+           "detail" :
+   {
+      "productName" : "Liquidificador",
+           "type" : "Office",
+           "brand" : "Philips",
+           "color" : "Black",
+           "notes" : "Special Edition"
+   },
+   "category" : 50,
+           "price" : 200.50,
+           "hasPromo": true,
+           "discount": 15.0
 }
 ```
 <i><p>* o atributo <i>seller</i> deve ser passado igual no exemplo de <i>request body</i> mostrado acima <br> </p></i>
@@ -196,5 +187,4 @@ podendo ter duas variações: seller e client</i>
 localhost:8080/products/{sellerId}/list
 ```
 <i><p>* sellerId: ID de um determinado seller;</p></i>
-
 
