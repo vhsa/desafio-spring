@@ -28,8 +28,12 @@ public class UserController {
 
     // CREATE A NEW SELLER
     @PostMapping("/seller")
-    public ResponseEntity<?> createNewClient (@RequestBody Seller seller ) {
-        return new ResponseEntity<>(userService.createNewSeller( seller ), HttpStatus.CREATED).getBody();
+    public ResponseEntity<SellerDTO> createNewSeller (@RequestBody Seller seller ) {
+
+        if ( userService.createNewSeller( seller ) != null )
+            return new ResponseEntity<>(userService.createNewSeller( seller ), HttpStatus.CREATED).getBody();
+
+        return new ResponseEntity("Something went wrong to create a new seller", HttpStatus.BAD_REQUEST);
     }
 
     // CLIENT FOLLOW SELLER
@@ -86,27 +90,6 @@ public class UserController {
     public void unfollow (@PathVariable int userId, @PathVariable int userIdToUnfollow) {
         userService.unfollow(userId, userIdToUnfollow);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // CREATE A NEW SELLER
-//    public ResponseEntity<Response<Seller>> createNewSeller ( Seller )
-
-
 
 
 

@@ -31,16 +31,20 @@ public class UserService {
 
     public ResponseEntity<ClientDTO> createNewClient ( Client client ) {
         Client response = clientRepository.save(client);
-        return new ResponseEntity<>(ClientDTO.builder().id(response.getId()).username(response.getUsername()).email(response.getEmail()).build(), HttpStatus.CREATED);
+
+        if ( response != null )
+            return new ResponseEntity<>(ClientDTO.builder().id(response.getId()).username(response.getUsername()).email(response.getEmail()).build(), HttpStatus.CREATED);
+
+        return null;
     }
 
-    public ResponseEntity<?> createNewSeller ( Seller seller ) {
+    public ResponseEntity<SellerDTO> createNewSeller ( Seller seller ) {
         Seller response = sellerRepository.save(seller);
 
         if (response != null)
-            return new ResponseEntity<>(SellerDTO.builder().id(response.getId()).username(response.getUsername()).email(response.getEmail()).build(), HttpStatus.CREATED);
+            return new ResponseEntity(SellerDTO.builder().id(response.getId()).username(response.getUsername()).email(response.getEmail()).build(), HttpStatus.CREATED);
 
-        return new ResponseEntity<>("Error to create a new seller", HttpStatus.BAD_REQUEST);
+        return null;
     }
 
     public Followers clientFollowSeller ( int userId, int userIdToFollow ) {
@@ -185,9 +189,7 @@ public class UserService {
 
         if ( client != null & seller != null ) {
             followersRepository.delete(new Followers(userId, userIdToUnfollow));
-//            return ResponseEntity.ok().body("Unfollow succeed");
         }
 
-//        return ResponseEntity.badRequest().body("Failed to unfollow the user");
     }
 }
