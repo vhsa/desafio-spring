@@ -38,7 +38,7 @@ public class PostService {
     @Autowired
     ClientRepository clientRepository;
 
-    public ResponseEntity<Response<NewPostDTO>> createNewPost(Post post) {
+    public ResponseEntity<NewPostDTO> createNewPost(Post post) {
 
         // verify if seller exists
         int seller_id = post.getSeller().getId();
@@ -49,16 +49,16 @@ public class PostService {
             // save a new post
             Post newPost = postRepository.save(post);
 
-            return ResponseEntity.ok().body(new Response<>(NewPostDTO.builder()
+            return new ResponseEntity(NewPostDTO.builder()
                     .userId(newPost.getSeller().getId())
                     .id_post(newPost.getId_post())
                     .date(newPost.getDate())
                     .detail(newPost.getDetail())
                     .category(newPost.getCategory())
                     .price(newPost.getPrice())
-                    .build()));
+                    .build(), HttpStatus.OK);
         }
-        return ResponseEntity.badRequest().body(new Response<>("Seller not exists"));
+        return new ResponseEntity("Seller not exists", HttpStatus.BAD_REQUEST);
     }
 
     public FollowedPostsListDTO getPostsForFollowedSeller(int userId, String order) {
@@ -83,7 +83,7 @@ public class PostService {
 
             for ( Post post : sortTwoWeeksList(listPostsFromSeller) ) {
                 newPost = new NewPostDTO(
-                        post.getSeller().getId(),
+                        null,
                         post.getId_post(),
                         post.getDate(),
                         post.getDetail(),
@@ -174,7 +174,7 @@ public class PostService {
 
             for (Post p : postList) {
                 newPostDTO = new NewPostDTO(
-                        userId,
+                        null,
                         p.getId_post(),
                         p.getDate(),
                         p.getDetail(),

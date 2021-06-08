@@ -10,6 +10,7 @@ import br.com.desafiospring.repository.ClientRepository;
 import br.com.desafiospring.repository.FollowersRepository;
 import br.com.desafiospring.repository.SellerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -28,14 +29,18 @@ public class UserService {
     @Autowired
     FollowersRepository followersRepository;
 
-    public ClientDTO createNewClient ( Client client ) {
+    public ResponseEntity<ClientDTO> createNewClient ( Client client ) {
         Client response = clientRepository.save(client);
-        return ClientDTO.builder().id(response.getId()).username(response.getUsername()).email(response.getEmail()).build();
+        return new ResponseEntity<>(ClientDTO.builder().id(response.getId()).username(response.getUsername()).email(response.getEmail()).build(), HttpStatus.CREATED);
     }
 
-    public SellerDTO createNewSeller ( Seller seller ) {
+    public ResponseEntity<?> createNewSeller ( Seller seller ) {
         Seller response = sellerRepository.save(seller);
-        return SellerDTO.builder().id(response.getId()).username(response.getUsername()).email(response.getEmail()).build();
+
+        if (response != null)
+            return new ResponseEntity<>(SellerDTO.builder().id(response.getId()).username(response.getUsername()).email(response.getEmail()).build(), HttpStatus.CREATED);
+
+        return new ResponseEntity<>("Error to create a new seller", HttpStatus.BAD_REQUEST);
     }
 
     public Followers clientFollowSeller ( int userId, int userIdToFollow ) {
@@ -51,12 +56,20 @@ public class UserService {
 
     public ClientDTO getClient(int userId) {
         Client client = clientRepository.findById(userId).orElse(null);
-        return ClientDTO.builder().id(client.getId()).username(client.getUsername()).email(client.getEmail()).build();
+
+        if ( client != null)
+            return ClientDTO.builder().id(client.getId()).username(client.getUsername()).email(client.getEmail()).type("client").build();
+
+        return null;
     }
 
-    public Seller getSeller(int userId) {
-        Seller byId = sellerRepository.findById(userId).orElse(null);
-        return byId;
+    public SellerDTO getSeller(int userId) {
+        Seller seller = sellerRepository.findById(userId).orElse(null);
+
+        if ( seller != null )
+            return SellerDTO.builder().id(seller.getId()).username(seller.getUsername()).email(seller.getEmail()).type("seller").build();
+
+        return null;
     }
 
     public SellerFollowersCountDTO getFollowersFromSeller(int userId) {
@@ -64,7 +77,7 @@ public class UserService {
 
         if ( seller != null ) {
             List<Followers> seguidores = followersRepository.findAll().stream().filter( f -> f.getSeller_id() == seller.getId() ).collect(Collectors.toList());
-            return SellerFollowersCountDTO.builder().userid(seller.getId()).username(seller.getUsername()).followers_count(seguidores.toArray().length).build();
+            return SellerFollowersCountDTO.builder().userId(seller.getId()).userName(seller.getUsername()).followers_count(seguidores.toArray().length).build();
         }
         return null;
     }
@@ -93,7 +106,7 @@ public class UserService {
                 FollowersDTO followersDTO = new FollowersDTO();
 
                 followersDTO.setUserId(clientAux.getId());
-                followersDTO.setUsername(clientAux.getUsername());
+                followersDTO.setUserName(clientAux.getUsername());
 
                 followersDTOList.add(followersDTO);
             }
@@ -103,11 +116,11 @@ public class UserService {
             if (order != null) {
                 if ( order.equalsIgnoreCase(String.valueOf(SortOrderEnum.NAME_ASC)) ) {
                     sortedFollowersDTOList = followersDTOList.stream()
-                            .sorted(Comparator.comparing(FollowersDTO::getUsername))
+                            .sorted(Comparator.comparing(FollowersDTO::getUserName))
                             .collect(Collectors.toList());
                 } else {
                     sortedFollowersDTOList = followersDTOList.stream()
-                            .sorted(Comparator.comparing(FollowersDTO::getUsername).reversed())
+                            .sorted(Comparator.comparing(FollowersDTO::getUserName).reversed())
                             .collect(Collectors.toList());
                 }
             } else {
@@ -116,7 +129,7 @@ public class UserService {
 
             return UserFollowersListDTO.builder()
                     .userId(seller.getId())
-                    .username(seller.getUsername())
+                    .userName(seller.getUsername())
                     .followers(sortedFollowersDTOList)
                     .build();
 
@@ -134,7 +147,7 @@ public class UserService {
                 FollowersDTO followersDTO = new FollowersDTO();
 
                 followersDTO.setUserId(sellerAux.getId());
-                followersDTO.setUsername(sellerAux.getUsername());
+                followersDTO.setUserName(sellerAux.getUsername());
 
                 followersDTOList.add(followersDTO);
             }
@@ -144,11 +157,11 @@ public class UserService {
             if (order != null) {
                 if ( order.equalsIgnoreCase(String.valueOf(SortOrderEnum.NAME_ASC)) ) {
                     sortedFollowersDTOList = followersDTOList.stream()
-                            .sorted(Comparator.comparing(FollowersDTO::getUsername))
+                            .sorted(Comparator.comparing(FollowersDTO::getUserName))
                             .collect(Collectors.toList());
                 } else {
                     sortedFollowersDTOList = followersDTOList.stream()
-                            .sorted(Comparator.comparing(FollowersDTO::getUsername).reversed())
+                            .sorted(Comparator.comparing(FollowersDTO::getUserName).reversed())
                             .collect(Collectors.toList());
                 }
             } else {
@@ -157,7 +170,7 @@ public class UserService {
 
             return UserFollowersListDTO.builder()
                     .userId(client.getId())
-                    .username(client.getUsername())
+                    .userName(client.getUsername())
                     .followed(sortedFollowersDTOList)
                     .build();
 

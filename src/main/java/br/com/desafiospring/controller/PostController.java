@@ -7,6 +7,7 @@ import br.com.desafiospring.dtos.Response;
 import br.com.desafiospring.model.Post;
 import br.com.desafiospring.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,12 +19,12 @@ public class PostController {
     PostService postService;
 
     @PostMapping("/newpost")
-    public ResponseEntity<Response<NewPostDTO>> createNewPost(@RequestBody Post post ) {
+    public ResponseEntity<NewPostDTO> createNewPost(@RequestBody Post post ) {
 
         if (postService.createNewPost(post) != null)
-            return postService.createNewPost(post);
+            return new ResponseEntity<>(postService.createNewPost(post), HttpStatus.OK).getBody();
         else
-            return ResponseEntity.badRequest().body(new Response<>("Something went wrong"));
+            return new ResponseEntity("Something went wrong", HttpStatus.BAD_REQUEST);
     }
 
     // getting post for a followed seller

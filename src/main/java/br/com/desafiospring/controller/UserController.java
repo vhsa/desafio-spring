@@ -5,6 +5,7 @@ import br.com.desafiospring.model.Client;
 import br.com.desafiospring.model.Seller;
 import br.com.desafiospring.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,18 +18,18 @@ public class UserController {
 
     // CREATE A NEW CLIENT
     @PostMapping("/client")
-    public ResponseEntity<Response<ClientDTO>> createNewClient (@RequestBody Client client ) {
+    public ResponseEntity<ClientDTO> createNewClient (@RequestBody Client client ) {
 
         if ( userService.createNewClient( client ) != null ) {
-            return ResponseEntity.ok().body(new Response<>(userService.createNewClient( client )));
+            return new ResponseEntity(userService.createNewClient( client ), HttpStatus.CREATED);
         }
-        return ResponseEntity.badRequest().body(new Response<>("Something went wrong to create a new client"));
+        return new ResponseEntity("Something went wrong to create a new client", HttpStatus.BAD_REQUEST);
     }
 
     // CREATE A NEW SELLER
     @PostMapping("/seller")
-    public ResponseEntity<Response<SellerDTO>> createNewClient (@RequestBody Seller seller ) {
-        return ResponseEntity.ok(new Response<SellerDTO>(userService.createNewSeller( seller )));
+    public ResponseEntity<?> createNewClient (@RequestBody Seller seller ) {
+        return new ResponseEntity<>(userService.createNewSeller( seller ), HttpStatus.CREATED).getBody();
     }
 
     // CLIENT FOLLOW SELLER
@@ -36,36 +37,48 @@ public class UserController {
     public ResponseEntity<?> follow (@PathVariable int userId, @PathVariable int userIdToFollow ) {
 
             if ( userService.clientFollowSeller(userId, userIdToFollow) != null ) {
-                return ResponseEntity.ok().body(new Response<>("Followed success"));
+                return ResponseEntity.ok().body("Followed success");
             }
-            return ResponseEntity.badRequest().body(new Response<>("Something went wrong to follow the user"));
+            return ResponseEntity.badRequest().body("Something went wrong to follow the user");
     }
 
     @GetMapping("/client/{userId}")
-    public ResponseEntity<Response<ClientDTO>> getClient (@PathVariable int userId) {
-        return ResponseEntity.ok().body(new Response<ClientDTO>(userService.getClient(userId)));
+    public ResponseEntity<ClientDTO> getClient (@PathVariable int userId) {
+
+        if ( userService.getClient(userId) != null )
+            return new ResponseEntity(userService.getClient(userId), HttpStatus.OK);
+
+        return new ResponseEntity("Client not found", HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/seller/{userId}")
-    public ResponseEntity<Response<Seller>> getSeller (@PathVariable int userId) {
-        return ResponseEntity.ok().body(new Response<Seller>(userService.getSeller(userId)));
+    public ResponseEntity<Seller> getSeller (@PathVariable int userId) {
+
+        if ( userService.getSeller(userId) != null )
+            return new ResponseEntity(userService.getSeller(userId), HttpStatus.OK);
+
+        return new ResponseEntity("Seller not found", HttpStatus.BAD_REQUEST);
     }
 
     // GET NUMBER OF FOLLOWERS THAT FOLLOWING SOME SELLER
     @GetMapping("/{userId}/followers/count")
-    public ResponseEntity<Response<SellerFollowersCountDTO>> getFollowersFromSeller (@PathVariable int userId) {
-        return ResponseEntity.ok().body(new Response<SellerFollowersCountDTO>( userService.getFollowersFromSeller(userId)));
+    public ResponseEntity<SellerFollowersCountDTO> getFollowersFromSeller (@PathVariable int userId) {
+
+        if ( userService.getFollowersFromSeller(userId) != null )
+            return new ResponseEntity(userService.getFollowersFromSeller(userId), HttpStatus.OK);
+
+        return new ResponseEntity("Seller not found", HttpStatus.BAD_REQUEST);
     }
 
     // GET LIST OF ALL CLIENTS THAT FOLLOWS SOME SELLER
     @GetMapping("/{userId}/followers/list")
-    public ResponseEntity<Response<UserFollowersListDTO>> getAllClientsFollowersSeller (@PathVariable int userId, @RequestParam String type, @RequestParam(required = false) String order) {
+    public ResponseEntity<UserFollowersListDTO> getAllClientsFollowersSeller (@PathVariable int userId, @RequestParam String type, @RequestParam(required = false) String order) {
 
         if ( userService.getAllClientsFollowersSeller(userId, type, order) != null ) {
-            return ResponseEntity.ok().body(new Response<>( userService.getAllClientsFollowersSeller(userId, type, order) ));
+            return new ResponseEntity(userService.getAllClientsFollowersSeller(userId, type, order), HttpStatus.OK);
         }
 
-        return ResponseEntity.badRequest().body(new Response<>("Seller not found"));
+        return new ResponseEntity("Seller not found", HttpStatus.BAD_REQUEST);
     }
 
     // unfollow some seller

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class SellerFollowersCountDTO {
-    private int userid;
-    private String username;
+    private int userId;
+    private String userName;
     private int followers_count;
 }

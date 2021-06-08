@@ -12,7 +12,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserFollowersListDTO implements Serializable {
     private int userId;
-    private String username;
+    private String userName;
     private List<FollowersDTO> followers;
     private List<FollowersDTO> followed;
 }

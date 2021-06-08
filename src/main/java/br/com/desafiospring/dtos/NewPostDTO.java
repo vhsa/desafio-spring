@@ -14,8 +14,9 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class NewPostDTO {
-    private int userId;
+    private Integer userId;
     private int id_post;
     private LocalDate date;
     private ProductDetail detail;
@@ -23,10 +24,10 @@ public class NewPostDTO {
     private double price;
 
     // promo post attributes
-    private boolean hasPromo;
-    private double discount;
+    private Boolean hasPromo;
+    private Double discount;
 
-    public NewPostDTO(int id, int id_post, LocalDate date, ProductDetail detail, int category, double price) {
+    public NewPostDTO(Integer id, int id_post, LocalDate date, ProductDetail detail, int category, double price) {
         this.userId = id;
         this.id_post = id_post;
         this.date = date;
