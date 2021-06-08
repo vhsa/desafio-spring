@@ -1,11 +1,15 @@
 Primeiros passos para inicias a aplicacao:
 
-1) Dentro da pasta do projeto, digite o seguinte comando:
+1) Requerimentos
+    1.1) Open JDK 11
+    2.1) Docker 
+
+2) Dentro da pasta do projeto, digite o seguinte comando:
 ```shell
 cd ./src/main/resources
 ```
 
-2) Inicie o banco de dados da aplicação com o seguinte comando
+3) Inicie o banco de dados da aplicação com o seguinte comando
 ```shell
 docker-compose up
 ```
