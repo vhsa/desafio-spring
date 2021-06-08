@@ -48,19 +48,6 @@ docker-compose up
 <i><p>* ambos os campos são <b>obrigatórios</b> e o email deve ser <b>único</b></p></i>
 
 * UC02 - Create a new seller
-```shell
-/users/seller
-```
-
-```javascript
-{
-    "username": "seller1",
-    "email": "seller1@mercadolivre.com"
-}
-```
-<i><p>* ambos os campos são <b>obrigatórios</b> e o email deve ser <b>único</b></p></i>
-
-* UC02 - Create a new seller
 
 ```javascript
 {
