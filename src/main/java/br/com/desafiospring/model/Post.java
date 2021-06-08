@@ -23,6 +23,10 @@ public class Post implements Serializable {
     private int category;
     private double price;
 
+    // promo post
+    private boolean hasPromo;
+    private double discount;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Seller seller;

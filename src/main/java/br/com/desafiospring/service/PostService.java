@@ -2,6 +2,7 @@ package br.com.desafiospring.service;
 
 import br.com.desafiospring.dtos.FollowedPostsListDTO;
 import br.com.desafiospring.dtos.NewPostDTO;
+import br.com.desafiospring.dtos.PromoCountProductsDTO;
 import br.com.desafiospring.dtos.Response;
 import br.com.desafiospring.model.Client;
 import br.com.desafiospring.model.Post;
@@ -12,6 +13,7 @@ import br.com.desafiospring.repository.PostRepository;
 import br.com.desafiospring.repository.ProductDetailRepository;
 import br.com.desafiospring.repository.SellerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -43,46 +45,7 @@ public class PostService {
 
         Seller seller = sellerRepository.findById(seller_id).orElse(null);
 
-        // seller exists
         if ( seller != null ) {
-
-            // already exists a product, so we need update
-//            if ( post.getDetail().getProduct_id() != 0 && post.getId_post() != 0 ) {
-//
-//                ProductDetail productDetail = productDetailRepository.findById(post.getDetail().getProduct_id()).orElse(null );
-//
-//                if ( productDetail != null ) {
-//
-//                    ProductDetail newProduct = productDetailRepository.save(post.getDetail());
-//
-//                    return NewPostDTO.builder()
-//                            .userId(post.getSeller().getId())
-//                            .id_post(post.getId_post())
-//                            .date(post.getDate())
-//                            .detail(newProduct)
-//                            .category(post.getCategory())
-//                            .price(post.getPrice())
-//                            .build();
-//                }
-//            }
-//
-//            if ( post.getId_post() != 0 ) { // already exits a post
-//                Post updatingPost = postRepository.findById(post.getId_post()).orElse(null);
-//
-//                if (updatingPost != null) {
-//                    Post updatedPost = postRepository.save(post);
-//
-//                    return NewPostDTO.builder()
-//                            .userId(updatedPost.getSeller().getId())
-//                            .id_post(updatedPost.getId_post())
-//                            .date(updatedPost.getDate())
-//                            .detail(updatedPost.getDetail())
-//                            .category(updatedPost.getCategory())
-//                            .price(updatedPost.getPrice())
-//                            .build();
-//                }
-//            }
-
             // save a new post
             Post newPost = postRepository.save(post);
 
@@ -94,10 +57,6 @@ public class PostService {
                     .category(newPost.getCategory())
                     .price(newPost.getPrice())
                     .build()));
-
-//            } else {
-                // response with "error to save a new product"
-//            }
         }
         return ResponseEntity.badRequest().body(new Response<>("Seller not exists"));
     }
@@ -156,5 +115,86 @@ public class PostService {
         return postList
                 .stream()
                 .filter(p -> p.getDate().plusWeeks(2).isAfter(LocalDate.now()) || p.getDate().plusWeeks(2).isEqual(LocalDate.now())).collect(Collectors.toList());
+    }
+
+    public ResponseEntity<NewPostDTO> createNewPromoPost(Post post) {
+
+        int seller_id = post.getSeller().getId();
+
+        Seller seller = sellerRepository.findById(seller_id).orElse(null);
+
+        if ( seller != null ) {
+            Post newPromoPost = postRepository.save(post);
+
+            return new ResponseEntity(NewPostDTO.builder()
+                    .userId(newPromoPost.getSeller().getId())
+                    .id_post(newPromoPost.getId_post())
+                    .date(newPromoPost.getDate())
+                    .detail(newPromoPost.getDetail())
+                    .category(newPromoPost.getCategory())
+                    .price(newPromoPost.getPrice())
+                    .hasPromo(newPromoPost.isHasPromo())
+                    .discount(newPromoPost.getDiscount())
+                    .build(), HttpStatus.OK);
+        }
+
+        return new ResponseEntity("Seller not found", HttpStatus.BAD_REQUEST);
+
+    }
+
+    public ResponseEntity getPromoCountProducts(int userId) {
+
+        Seller seller = sellerRepository.findById(userId).orElse(null);
+
+        if ( seller != null ) {
+
+            // find a products from seller
+            List<Post> postList = postRepository.findAll().stream().filter( p -> p.getSeller().getId() == seller.getId() && p.isHasPromo()).collect(Collectors.toList());
+
+            return new ResponseEntity(PromoCountProductsDTO.builder()
+                    .userId(userId)
+                    .userName(seller.getUsername())
+                    .promoproducts_count(postList.size())
+                    .build(), HttpStatus.OK);
+        }
+
+        return new ResponseEntity("Seller not found", HttpStatus.BAD_REQUEST);
+    }
+
+    public ResponseEntity allPromoProductsFromSpecificSeller (int userId) {
+
+        Seller seller = sellerRepository.findById(userId).orElse(null);
+
+        if ( seller != null ) {
+            List<Post> postList = postRepository.findAll().stream().filter( p -> p.getSeller().getId() == seller.getId() && p.isHasPromo()).collect(Collectors.toList());
+
+            NewPostDTO newPostDTO = null;
+
+            List<NewPostDTO> newPostDTOList = new ArrayList<>();
+
+            for (Post p : postList) {
+                newPostDTO = new NewPostDTO(
+                        userId,
+                        p.getId_post(),
+                        p.getDate(),
+                        p.getDetail(),
+                        p.getCategory(),
+                        p.getPrice(),
+                        p.isHasPromo(),
+                        p.getDiscount()
+                );
+
+                newPostDTOList.add(newPostDTO);
+            }
+
+            return new ResponseEntity(
+                    FollowedPostsListDTO.builder()
+                    .userId(userId)
+                    .userName(seller.getUsername())
+                    .posts(newPostDTOList)
+                    .build()
+                    ,HttpStatus.OK);
+        }
+        return new ResponseEntity("Seller not found", HttpStatus.BAD_REQUEST);
     }
 }

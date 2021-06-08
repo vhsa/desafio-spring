@@ -158,7 +158,7 @@ public class UserService {
             return UserFollowersListDTO.builder()
                     .userId(client.getId())
                     .username(client.getUsername())
-                    .followers(sortedFollowersDTOList)
+                    .followed(sortedFollowersDTOList)
                     .build();
 
         }
