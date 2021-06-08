@@ -1,8 +1,8 @@
 Primeiros passos para inicias a aplicacao:
 
 1) Requerimentos
-    1.1) Open JDK 11
-    2.1) Docker 
+    - Open JDK 11
+    - Docker 
 
 2) Dentro da pasta do projeto, digite o seguinte comando:
 ```shell
