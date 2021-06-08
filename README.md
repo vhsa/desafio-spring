@@ -28,6 +28,9 @@ docker-compose up
     <li>
         Todos os requisitos técnicos funcionais foram abordados, em ordem, nas request do <i>postman</i>
     </li>
+    <li>
+        Caso alguma dúvida, pode acessar o link do swagger com todas as rotas <a href="http://localhost:8080/swagger-ui.html#/">aqui</a>
+    </li>
 </ol>
 
 <hr>
@@ -42,7 +45,7 @@ docker-compose up
 ```javascript
 {
    "username": "client1",
-           "email": "client1@mercadolivre.com"
+   "email": "client1@mercadolivre.com"
 }
 ```
 <i><p>* ambos os campos são <b>obrigatórios</b> e o email deve ser <b>único</b></p></i>
@@ -52,7 +55,7 @@ docker-compose up
 ```javascript
 {
    "username": "seller1",
-           "email": "seller1@mercadolivre.com"
+   "email": "seller1@mercadolivre.com"
 }
 ```
 <i><p>* ambos os campos são <b>obrigatórios</b> e o email deve ser <b>único</b></p></i>
@@ -104,16 +107,16 @@ podendo ter duas variações: seller e client</i>
 {
    "seller": {"id" : 1},
    "date" : "2021-06-08",
-           "detail" :
+   "detail" :
    {
-      "productName" : "Celular",
-           "type" : "Office",
-           "brand" : "Apple",
-           "color" : "Black",
-           "notes" : "Special Edition"
+     "productName" : "Celular",
+     "type" : "Office",
+     "brand" : "Apple",
+     "color" : "Black",
+     "notes" : "Special Edition"
    },
    "category" : 100,
-           "price" : 2500.50
+   "price" : 2500.50
 }
 ```
 <i><p>* o atributo <i>seller</i> deve ser passado igual no exemplo de <i>request body</i> mostrado acima <br> </p></i>
@@ -158,18 +161,18 @@ podendo ter duas variações: seller e client</i>
 {
    "seller": {"id" : 1},
    "date" : "2021-06-10",
-           "detail" :
+   "detail" :
    {
       "productName" : "Liquidificador",
-           "type" : "Office",
-           "brand" : "Philips",
-           "color" : "Black",
-           "notes" : "Special Edition"
+      "type" : "Office",
+      "brand" : "Philips",
+      "color" : "Black",
+      "notes" : "Special Edition"
    },
-   "category" : 50,
-           "price" : 200.50,
-           "hasPromo": true,
-           "discount": 15.0
+   "category" : 50, 
+   "price" : 200.50,
+   "hasPromo": true,
+   "discount": 15.0
 }
 ```
 <i><p>* o atributo <i>seller</i> deve ser passado igual no exemplo de <i>request body</i> mostrado acima <br> </p></i>
